@@ -1,0 +1,11 @@
+// color
+$primary_color:#CF5800;
+$white_color:#fff;
+
+$container-width-lg: 76%;
+$container-width-md: 90%;
+$container-width-sm: 94%;
+
+@mixin transition_ease {
+  transition: all .3s ease;
+}
