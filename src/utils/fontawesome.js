@@ -8,6 +8,8 @@ import { faMagnifyingGlassDollar } from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { faLock } from '@fortawesome/free-solid-svg-icons'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { faPencil } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faBars)
 library.add(faHouse)
@@ -18,3 +20,5 @@ library.add(faChartColumn)
 library.add(faUser)
 library.add(faLock)
 library.add(faEnvelope)
+library.add(faPencil)
+library.add(faEllipsisVertical)
