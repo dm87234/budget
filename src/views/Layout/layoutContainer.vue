@@ -4,17 +4,30 @@
   <div class="common-layout">
     <el-container>
       <el-aside>
-        <div class="top">
+        <!-- <div class="top">
           <font-awesome-icon :icon="['fas', 'bars']" />
-        </div>
+        </div> -->
         <div class="middle">
-          <font-awesome-icon :icon="['fas', 'house']" />
-          <font-awesome-icon :icon="['fas', 'magnifying-glass-dollar']" />
-          <font-awesome-icon :icon="['fas', 'chart-column']" />
-          <font-awesome-icon :icon="['fas', 'gear']" />
+          <router-link to="/home">
+            <font-awesome-icon :icon="['fas', 'house']" />
+            <span class="menuText">首頁</span>
+          </router-link>
+          <router-link to="/budget">
+            <font-awesome-icon :icon="['fas', 'magnifying-glass-dollar']" />
+            <span class="menuText">預算</span>
+          </router-link>
+          <router-link to="/chart">
+            <font-awesome-icon :icon="['fas', 'chart-column']" />
+            <span class="menuText">圖表</span>
+          </router-link>
+          <router-link to="/settings">
+            <font-awesome-icon :icon="['fas', 'gear']" />
+            <span class="menuText">設定</span>
+          </router-link>
         </div>
         <div class="bottom">
           <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
+          <span class="menuText">登出</span>
         </div>
       </el-aside>
       <el-main>
@@ -37,35 +50,63 @@
     height: 90%;
     // border: 1px solid rebeccapurple;
     .el-aside {
-      font-size: 30px;
+      font-size: 26px;
       color: $white_color;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      align-items: center;
-      padding-top: 30px;
-      padding-bottom: 30px;
-      width: 100px;
+      align-items: flex-start;
+      padding: 80px 0 80px 22px;
+      width: 128px;
       background: #e37b58;
       border-radius: 20px 0 0 20px;
-      @include transition_ease;
-
-      &:hover {
-        width: 200px;
-      }
       .middle {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         gap: 50px;
+        a {
+          color: white;
+          display: flex;
+          align-items: center;
+          @include transition_ease;
+          &:hover {
+            color: #ffe6b1;
+          }
+        }
+
+        .router-link-active {
+          color: #ffe6b1;
+        }
+        .menuText {
+          font-size: 18px;
+          margin-left: 8px;
+        }
+      }
+
+      .bottom {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        @include transition_ease;
+        &:hover {
+          color: #ffe6b1;
+        }
+        .menuText {
+          font-size: 18px;
+          margin-left: 8px;
+        }
       }
     }
 
     .el-main {
-      padding: 0;
+      padding: 10px;
       background: #fdf7eb;
-      border-radius: 0 20px 20px 0;
+      position: relative;
+      // border-radius: 0 20px 20px 0;
+      border-radius: 20px;
+      left: -15px;
     }
   }
 }

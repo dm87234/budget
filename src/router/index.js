@@ -18,19 +18,19 @@ const router = createRouter({
       redirect: '/home',
       children: [
         {
-          path: 'home',
+          path: '/home',
           component: () => import('@/views/home/index.vue')
         },
         {
-          path: 'budget',
+          path: '/budget',
           component: () => import('@/views/budget/index.vue')
         },
         {
-          path: 'chart',
+          path: '/chart',
           component: () => import('@/views/chart/index.vue')
         },
         {
-          path: 'settings',
+          path: '/settings',
           component: () => import('@/views/user/index.vue')
         }
       ]
