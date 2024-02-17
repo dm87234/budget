@@ -1,4 +1,23 @@
-<script setup></script>
+<script setup>
+import { ref } from 'vue'
+const LoginDialogVisible = ref(false) // 控制登入談框
+const isRegister = ref(false)
+const loginForm = ref({
+  username: '',
+  password: '',
+  repassword: '',
+  email: ''
+})
+// 點擊立即使用
+const onOpenDialog = () => {
+  LoginDialogVisible.value = true
+}
+
+// 登入
+const onLogin = () => {
+  console.log(11)
+}
+</script>
 
 <template>
   <div class="login_container">
@@ -11,20 +30,125 @@
           <p>
             最美記帳 <br />易用可靠的雲端記帳工具 <br />中小企業最安心的成長夥伴
           </p>
-          <button>立即使用</button>
+          <button @click="onOpenDialog">立即使用</button>
         </div>
         <div class="right">
           <img src="../../assets/images/computer.png" />
         </div>
       </div>
     </div>
+    <!-- 登入對話框 -->
+    <el-dialog
+      v-model="LoginDialogVisible"
+      :show-close="true"
+      width="414"
+      align-center
+    >
+      <template #header>
+        <div class="dialogTitleBox" v-if="!isRegister">
+          <h3>登入</h3>
+          <p>
+            沒有帳號，<span class="orange" @click="isRegister = true"
+              >快速註冊</span
+            >
+          </p>
+        </div>
+        <div class="dialogTitleBox" v-else>
+          <h3>註冊</h3>
+          <p>
+            已經註冊，<span class="orange" @click="isRegister = false"
+              >登入</span
+            >
+          </p>
+        </div>
+      </template>
+      <!-- 社群登入 -->
+      <div class="loginTip">使用社群帳號繼續</div>
+      <div class="socialLogin">
+        <button class="bgStyle fbLogin"></button>
+        <button class="bgStyle lineLogin"></button>
+        <button class="bgStyle googleLogin"></button>
+      </div>
+      <div v-if="!isRegister" class="loginTip">或使用帳號密碼登入</div>
+      <div v-else class="loginTip">或註冊成為會員</div>
+
+      <!-- 登入表單 -->
+      <el-form v-if="!isRegister" :model="loginForm">
+        <el-form-item>
+          <font-awesome-icon :icon="['fas', 'user']" />
+          <el-input
+            v-model="loginForm.username"
+            autocomplete="off"
+            placeholder="請輸入帳號"
+          />
+        </el-form-item>
+        <el-form-item>
+          <font-awesome-icon :icon="['fas', 'lock']" />
+          <el-input
+            v-model="loginForm.password"
+            autocomplete="off"
+            placeholder="請輸入密碼"
+          />
+        </el-form-item>
+      </el-form>
+
+      <!-- 註冊表單 -->
+      <el-form v-else :model="loginForm">
+        <el-form-item>
+          <font-awesome-icon :icon="['fas', 'user']" />
+          <el-input
+            v-model="loginForm.username"
+            autocomplete="off"
+            placeholder="帳號 (限6-10碼小寫英文數字)"
+          />
+        </el-form-item>
+        <el-form-item>
+          <font-awesome-icon :icon="['fas', 'envelope']" />
+          <el-input
+            v-model="loginForm.email"
+            autocomplete="off"
+            placeholder="電子信箱"
+          />
+        </el-form-item>
+        <el-form-item>
+          <font-awesome-icon :icon="['fas', 'lock']" />
+          <el-input
+            v-model="loginForm.password"
+            autocomplete="off"
+            placeholder="密碼 (限6-18碼英文數字符號)"
+          />
+        </el-form-item>
+        <el-form-item>
+          <font-awesome-icon :icon="['fas', 'lock']" />
+          <el-input
+            v-model="loginForm.repassword"
+            autocomplete="off"
+            placeholder="請再次輸入密碼"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div v-if="!isRegister" class="dialog-footer">
+          <el-button class="button" type="warning" @click="onLogin" disabled>
+            登入
+          </el-button>
+          <el-link type="primary">忘記密碼</el-link>
+        </div>
+        <div v-else class="dialog-footer">
+          <el-button class="button" type="warning" @click="onLogin" disabled>
+            註冊
+          </el-button>
+          <el-link type="primary">註冊即同意 隱私權政策 和 使用者條款</el-link>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .login_container {
   height: 100%;
-  background: url('../../assets/images/bg.jpg');
+  background: url('@/assets/images/bg.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
@@ -81,5 +205,75 @@
       }
     }
   }
+
+  :deep(.el-dialog) {
+    padding: 30px 50px;
+  }
+
+  :deep(.el-input__inner) {
+    padding-left: 20px;
+  }
+
+  .dialogTitleBox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    h3 {
+      font-size: 30px;
+    }
+    p {
+      color: rgba($color: #000000, $alpha: 0.4);
+      font-size: 16px;
+    }
+    .orange {
+      color: #fa8800;
+      cursor: pointer;
+      &:hover {
+        color: #f5c488;
+      }
+    }
+  }
+  .loginTip {
+    margin: 20px 0;
+  }
+  .socialLogin {
+    display: flex;
+    gap: 15px;
+    justify-content: space-around;
+
+    .bgStyle {
+      width: 56px;
+      height: 56px;
+      background-size: cover;
+      border-radius: 50%;
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+      @include transition_ease;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+    .fbLogin {
+      background-image: url('@/assets/images/facebook.png');
+    }
+    .lineLogin {
+      background-image: url('@/assets/images/line.png');
+    }
+    .googleLogin {
+      background-image: url('@/assets/images/google1.png');
+    }
+  }
+}
+.svg-inline--fa {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  z-index: 30;
+  font-size: 16px;
+}
+.button {
+  width: 100%;
+  margin-bottom: 10px;
 }
 </style>
