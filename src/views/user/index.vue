@@ -1,7 +1,30 @@
 <script setup>
-import inputCom from './components/inputCom.vue'
 import categoryCom from './components/categoryCom.vue'
+import { ref } from 'vue'
 
+const userInfoform = ref({
+  userName: '',
+  userEmail: ''
+})
+// 更改使用者名稱
+const isEditUserName = ref(false)
+const userNameEdit = () => {
+  isEditUserName.value = true
+}
+const onUserNameOk = () => {
+  isEditUserName.value = false
+}
+
+// 更改電子信箱
+const isEditUserEmail = ref(false)
+const userEmailEdit = () => {
+  isEditUserEmail.value = true
+}
+const onUserEmailOk = () => {
+  isEditUserEmail.value = false
+}
+
+// 假資料
 const list = [
   {
     icon: '🍽️',
@@ -71,11 +94,48 @@ const list = [
     <div class="top">
       <h3 class="title">個人資料設定</h3>
       <el-card shadow="never">
-        <inputCom>使用者名稱</inputCom>
-        <inputCom>電子信箱</inputCom>
+        <el-form label-position="top" :model="userInfoform">
+          <el-row :gutter="20">
+            <!-- 使用者名稱 -->
+            <el-col :span="12">
+              <el-form-item v-if="!isEditUserName" label="使用者名稱">
+                <el-input v-model="userInfoform.userName" disabled />
+                <font-awesome-icon
+                  :icon="['fas', 'pencil']"
+                  @click="userNameEdit"
+                />
+              </el-form-item>
+              <el-form-item v-else label="使用者名稱">
+                <el-input v-model="userInfoform.userName" maxlength="10" />
+                <font-awesome-icon
+                  :icon="['fas', 'circle-check']"
+                  @click="onUserNameOk"
+                />
+              </el-form-item>
+            </el-col>
+            <!-- 電子信箱 -->
+            <el-col :span="12">
+              <el-form-item v-if="!isEditUserEmail" label="電子信箱">
+                <el-input v-model="userInfoform.userEmail" disabled />
+                <font-awesome-icon
+                  :icon="['fas', 'pencil']"
+                  @click="userEmailEdit"
+                />
+              </el-form-item>
+              <el-form-item v-else label="電子信箱">
+                <el-input v-model="userInfoform.userEmail" maxlength="50" />
+                <font-awesome-icon
+                  :icon="['fas', 'circle-check']"
+                  @click="onUserEmailOk"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
         <el-button class="resetPwdBtn" type="danger">重置密碼</el-button>
       </el-card>
     </div>
+    <!-- 分類設定 -->
     <div class="bottom">
       <h3 class="title">分類設定</h3>
       <el-tabs type="border-card">
@@ -104,17 +164,24 @@ const list = [
     margin-bottom: 20px;
   }
   .top {
-    :deep(.el-card__body) {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 25px;
-      align-items: end;
-
-      .resetPwdBtn {
-        width: 100px;
-      }
-    }
     margin-bottom: 20px;
+    .resetPwdBtn {
+      width: 100px;
+    }
+    .fa-pencil,
+    .fa-circle-check {
+      font-size: 20px;
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      cursor: pointer;
+    }
+    .fa-pencil {
+      color: #576955;
+    }
+    .fa-circle-check {
+      color: #ff2d2d;
+    }
   }
   .bottom {
     :deep(.el-tab-pane) {
