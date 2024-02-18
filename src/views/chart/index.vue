@@ -29,68 +29,72 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-tabs type="border-card">
-    <el-tab-pane label="收支趨勢">
-      <div class="chartWrapper">
-        <!-- 月份選擇 -->
-        <div id="main"></div>
-        <div class="totalWrapper">
-          <div class="totalBox">
-            <div>收入</div>
-            <div>30,000</div>
-          </div>
-          <div class="totalBox">
-            <div>支出</div>
-            <div>30,000</div>
-          </div>
-          <div class="totalBox">
-            <div>收支差</div>
-            <div>30,000</div>
+  <div class="chartContainer m50">
+    <el-tabs type="border-card">
+      <el-tab-pane label="收支趨勢">
+        <div class="chartWrapper">
+          <!-- 月份選擇 -->
+          <div id="main"></div>
+          <div class="totalWrapper">
+            <div class="totalBox">
+              <div>收入</div>
+              <div>30,000</div>
+            </div>
+            <div class="totalBox">
+              <div>支出</div>
+              <div>30,000</div>
+            </div>
+            <div class="totalBox">
+              <div>收支差</div>
+              <div>30,000</div>
+            </div>
           </div>
         </div>
-      </div>
-    </el-tab-pane>
-    <el-tab-pane label="支出類別比"></el-tab-pane>
-    <el-tab-pane label="收入類別比"></el-tab-pane>
-  </el-tabs>
+      </el-tab-pane>
+      <el-tab-pane label="支出類別比"></el-tab-pane>
+      <el-tab-pane label="收入類別比"></el-tab-pane>
+    </el-tabs>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-.chartWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding: 20px 50px;
-  #main {
-    width: 800px;
-    height: 400px;
+.chartContainer {
+  .chartWrapper {
     display: flex;
     justify-content: center;
-  }
-  .totalWrapper {
-    width: 100%;
-    height: 80px;
-    display: flex;
-    gap: 50px;
-    justify-content: center;
-    .totalBox {
-      width: 200px;
-      background: #2ed573;
-      color: white;
-      padding: 15px 20px;
-      font-size: 20px;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px 50px;
+    #main {
+      width: 800px;
+      height: 400px;
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-      &:nth-child(1) {
+      justify-content: center;
+    }
+    .totalWrapper {
+      width: 100%;
+      height: 80px;
+      display: flex;
+      gap: 50px;
+      justify-content: center;
+      .totalBox {
+        width: 200px;
         background: #2ed573;
-      }
-      &:nth-child(2) {
-        background: #ff7f50;
-      }
-      &:nth-child(3) {
-        background: #3742fa;
+        color: white;
+        padding: 15px 20px;
+        font-size: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        &:nth-child(1) {
+          background: #2ed573;
+        }
+        &:nth-child(2) {
+          background: #ff7f50;
+        }
+        &:nth-child(3) {
+          background: #3742fa;
+        }
       }
     }
   }

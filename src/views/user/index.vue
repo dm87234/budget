@@ -1,5 +1,6 @@
 <script setup>
 import categoryCom from './components/categoryCom.vue'
+import addBtn from '@/components/addBtn.vue'
 import { ref } from 'vue'
 
 const userInfoform = ref({
@@ -65,32 +66,12 @@ const list = [
   {
     icon: '🔮',
     cateName: '玩具'
-  },
-  {
-    icon: '🀄',
-    cateName: '衣服'
-  },
-  {
-    icon: '🎃',
-    cateName: '飲食'
-  },
-  {
-    icon: '⚾',
-    cateName: '飲食'
-  },
-  {
-    icon: '🔮',
-    cateName: '玩具'
-  },
-  {
-    icon: '🀄',
-    cateName: '衣服'
   }
 ]
 </script>
 
 <template>
-  <div class="settings_container">
+  <div class="settings_container m50">
     <div class="top">
       <h3 class="title">個人資料設定</h3>
       <el-card shadow="never">
@@ -146,9 +127,10 @@ const list = [
           </categoryCom>
         </el-tab-pane>
         <el-tab-pane label="收入類別">Config</el-tab-pane>
-        <div class="addCateBtnContainer">
+        <!-- <div class="addCateBtnContainer">
           <el-button class="addCateBtn">新增類別</el-button>
-        </div>
+        </div> -->
+        <addBtn>新增類別</addBtn>
       </el-tabs>
     </div>
   </div>
@@ -156,8 +138,6 @@ const list = [
 
 <style lang="scss" scoped>
 .settings_container {
-  // width: $container-width-lg;
-  margin: 50px;
   .title {
     font-size: 26px;
     color: $text_color;
@@ -188,19 +168,6 @@ const list = [
       display: flex;
       flex-wrap: wrap;
       gap: 25px;
-    }
-    .addCateBtnContainer {
-      display: flex;
-      justify-content: flex-end;
-      .addCateBtn {
-        background: $button_color;
-        color: white;
-        @include transition_ease;
-        &:hover {
-          background: white;
-          color: $button_color;
-        }
-      }
     }
   }
 }
