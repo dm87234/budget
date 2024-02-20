@@ -29,6 +29,9 @@
   justify-content: flex-start;
   padding: 5px 10px;
   gap: 15px;
+  .fa-pencil {
+    color: #576955;
+  }
   .leftIcon {
     font-size: 50px;
   }

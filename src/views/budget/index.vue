@@ -2,6 +2,17 @@
 import budgetCateItem from './components/budgetCateItem.vue'
 import { ref } from 'vue'
 const monthlyBudget = ref('20,000')
+const isEditTotalBudget = ref(false)
+const isDisabled = ref(true)
+
+const onTotalBudgetEdit = async () => {
+  isDisabled.value = false
+  isEditTotalBudget.value = true
+}
+const onTotalBudgetOk = () => {
+  isDisabled.value = true
+  isEditTotalBudget.value = false
+}
 </script>
 
 <template>
@@ -24,7 +35,23 @@ const monthlyBudget = ref('20,000')
       <div class="right">
         <el-form :model="form">
           <el-form-item label="預算">
-            <el-input v-model="monthlyBudget" disabled />
+            <el-input
+              ref="inp"
+              v-model="monthlyBudget"
+              v-bind:disabled="isDisabled"
+              size="large"
+              style="width: 200px; font-size: 20px"
+            />
+            <font-awesome-icon
+              v-if="!isEditTotalBudget"
+              :icon="['fas', 'pencil']"
+              @click="onTotalBudgetEdit"
+            />
+            <font-awesome-icon
+              v-else
+              :icon="['fas', 'circle-check']"
+              @click="onTotalBudgetOk"
+            />
           </el-form-item>
         </el-form>
         <el-descriptions column="1">
@@ -56,6 +83,20 @@ const monthlyBudget = ref('20,000')
   }
   :deep(.el-form-item__label) {
     font-size: 20px;
+  }
+  .fa-circle-check,
+  .fa-pencil {
+    position: absolute;
+    top: 10px;
+    right: 5px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .fa-pencil {
+    color: #576955;
+  }
+  .fa-circle-check {
+    color: #ff2d2d;
   }
   .budgetCateContainer {
     margin-top: 30px;

@@ -1,6 +1,7 @@
 <script setup>
 // import { ref } from 'vue'
 import addBtn from '@/components/addBtn.vue'
+import myCalendar from './components/myCalendar.vue'
 const onEdit = (scope) => {
   console.log(scope)
 }
@@ -16,14 +17,7 @@ const tableData = [
 
 <template>
   <div class="homeContainer m50">
-    <el-calendar>
-      <template #date-cell="{ data }">
-        <p :class="data.isSelected ? 'is-selected' : ''">
-          {{ data.day.split('-').slice(1).join('-') }}
-          {{ data.isSelected ? '✔️' : '' }}
-        </p>
-      </template>
-    </el-calendar>
+    <myCalendar></myCalendar>
     <addBtn>新增一筆</addBtn>
     <el-table :data="tableData" stripe style="width: 100%">
       <el-table-column prop="date" label="日期" width="180"></el-table-column>

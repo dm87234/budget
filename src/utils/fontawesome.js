@@ -11,6 +11,8 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { faPencil } from '@fortawesome/free-solid-svg-icons'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faBars)
 library.add(faHouse)
@@ -24,3 +26,5 @@ library.add(faEnvelope)
 library.add(faPencil)
 library.add(faEllipsisVertical)
 library.add(faCircleCheck)
+library.add(faChevronLeft)
+library.add(faChevronRight)
