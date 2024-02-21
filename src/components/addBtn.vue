@@ -9,10 +9,11 @@
 
 <style lang="scss" scoped>
 .addCateBtnContainer {
-  display: flex;
-  justify-content: flex-end;
+  width: 100px;
+  margin-left: auto;
   margin-top: 20px;
   .addBtn {
+    width: 100px;
     background: $button_color;
     color: white;
     @include transition_ease;

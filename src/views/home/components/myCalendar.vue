@@ -49,7 +49,6 @@ const isLeapYear = (year) => {
 const calculateDays = () => {
   const { year, month, date } = getCurrentDate()
   if (currentYear.value === year && currentMonth.value === month) {
-    console.log(11)
     currentDate.value = date
   } else {
     currentDate.value = ''

@@ -1,4 +1,10 @@
-<script setup></script>
+<script setup>
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const logOut = () => {
+  router.push('/login')
+}
+</script>
 
 <template>
   <div class="common-layout">
@@ -25,7 +31,7 @@
             <span class="menuText">設定</span>
           </router-link>
         </div>
-        <div class="bottom">
+        <div @click="logOut" class="bottom">
           <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
           <span class="menuText">登出</span>
         </div>

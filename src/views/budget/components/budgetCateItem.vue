@@ -6,7 +6,7 @@ const props = defineProps({
 })
 const input = ref(props.message.cateBudget)
 const onBudgetCateEdit = () => {
-  console.log(props.message.id)
+  // console.log(props.message.id)
   isBudgetCateEdit.value = true
 }
 const onBudgetCateOk = () => {
