@@ -1,21 +1,84 @@
 <script setup>
 import { ref } from 'vue'
+import { userRegisterAPI, userLoginAPI } from '@/api/user.js'
+import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores'
+import router from '@/router'
 const LoginDialogVisible = ref(false) // 控制登入談框
 const isRegister = ref(false)
-const loginForm = ref({
+const formModel = ref({
   username: '',
   password: '',
   repassword: '',
   email: ''
 })
+
+const form = ref(null) //登入表單對象
+// 表單校驗
+const rules = {
+  username: [
+    { required: true, message: '請輸入帳號', trigger: 'blur' },
+    {
+      pattern: /^[a-z0-9]{6,10}$/,
+      message: '帳號必須是6-10碼小寫英文數字',
+      trigger: 'blur'
+    }
+  ],
+  email: [
+    { required: true, message: '請輸入電子信箱', trigger: 'blur' },
+    { type: 'email', message: '電子信箱不正確', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: '請輸入密碼', trigger: 'blur' },
+    {
+      pattern: /^[a-zA-Z0-9!@#$%^&*()-_+=?<>]{6,12}$/,
+      message: '密碼必須是6-12碼英文數字符號',
+      trigger: 'blur'
+    }
+  ],
+  repassword: [
+    {
+      validator: (rule, value, callback) => {
+        if (value !== formModel.value.password) {
+          callback(new Error('兩次密碼輸入不一致'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur'
+    }
+  ]
+}
+
 // 點擊立即使用
 const onOpenDialog = () => {
   LoginDialogVisible.value = true
 }
 
 // 登入
-const onLogin = () => {
-  console.log(11)
+const userStore = useUserStore()
+const onLogin = async () => {
+  await form.value.validate()
+  // 發請求
+  const res = await userLoginAPI(formModel.value)
+  userStore.setToken(res.data.token)
+  ElMessage.success('登入成功')
+  router.push('/')
+}
+
+// 註冊
+const onRegister = async () => {
+  await form.value.validate()
+  // 發請求
+  const res = await userRegisterAPI(formModel.value)
+  if (res.data.status === 0) {
+    ElMessage.success({
+      duration: 3500,
+      message: '註冊成功!!請登入'
+    })
+    formModel.value = {}
+    isRegister.value = false
+  }
 }
 </script>
 
@@ -73,69 +136,72 @@ const onLogin = () => {
       <div v-else class="loginTip">或註冊成為會員</div>
 
       <!-- 登入表單 -->
-      <el-form v-if="!isRegister" :model="loginForm">
-        <el-form-item>
+      <el-form v-if="!isRegister" :model="formModel" ref="form" :rules="rules">
+        <el-form-item prop="username">
           <font-awesome-icon :icon="['fas', 'user']" />
           <el-input
-            v-model="loginForm.username"
+            v-model="formModel.username"
             autocomplete="off"
             placeholder="請輸入帳號"
           />
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="password">
           <font-awesome-icon :icon="['fas', 'lock']" />
           <el-input
-            v-model="loginForm.password"
+            v-model="formModel.password"
             autocomplete="off"
             placeholder="請輸入密碼"
+            show-password
           />
         </el-form-item>
       </el-form>
 
       <!-- 註冊表單 -->
-      <el-form v-else :model="loginForm">
-        <el-form-item>
+      <el-form v-else :model="formModel" ref="form" :rules="rules">
+        <el-form-item prop="username">
           <font-awesome-icon :icon="['fas', 'user']" />
           <el-input
-            v-model="loginForm.username"
+            v-model="formModel.username"
             autocomplete="off"
             placeholder="帳號 (限6-10碼小寫英文數字)"
           />
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="email">
           <font-awesome-icon :icon="['fas', 'envelope']" />
           <el-input
-            v-model="loginForm.email"
+            v-model="formModel.email"
             autocomplete="off"
             placeholder="電子信箱"
           />
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="password">
           <font-awesome-icon :icon="['fas', 'lock']" />
           <el-input
-            v-model="loginForm.password"
+            v-model="formModel.password"
             autocomplete="off"
-            placeholder="密碼 (限6-18碼英文數字符號)"
+            placeholder="密碼 (限6-12碼英文數字符號)"
+            show-password
           />
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="repassword">
           <font-awesome-icon :icon="['fas', 'lock']" />
           <el-input
-            v-model="loginForm.repassword"
+            v-model="formModel.repassword"
             autocomplete="off"
             placeholder="請再次輸入密碼"
+            show-password
           />
         </el-form-item>
       </el-form>
       <template #footer>
         <div v-if="!isRegister" class="dialog-footer">
-          <el-button class="button" type="warning" @click="onLogin" disabled>
+          <el-button class="button" type="warning" @click="onLogin">
             登入
           </el-button>
           <el-link type="primary">忘記密碼</el-link>
         </div>
         <div v-else class="dialog-footer">
-          <el-button class="button" type="warning" @click="onLogin" disabled>
+          <el-button class="button" type="warning" @click="onRegister">
             註冊
           </el-button>
           <el-link type="primary">註冊即同意 隱私權政策 和 使用者條款</el-link>
