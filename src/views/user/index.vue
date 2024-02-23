@@ -1,73 +1,83 @@
 <script setup>
+import { ref, computed } from 'vue'
 import categoryCom from './components/categoryCom.vue'
 import addBtn from '@/components/addBtn.vue'
-import { ref } from 'vue'
+// API
+import { getUserInfoAPI, updateUserInfoAPI } from '@/api/user'
+import { getCateListAPI } from '@/api/category'
+import { ElMessage } from 'element-plus'
 
+// 儲存使用者基本資料
 const userInfoform = ref({
-  userName: '',
-  userEmail: ''
+  nickname: '',
+  email: ''
 })
-// 更改使用者名稱
+// 分類資料
+const cateList = ref([])
+
+// 更改暱稱
 const isEditUserName = ref(false)
 const userNameEdit = () => {
   isEditUserName.value = true
 }
-const onUserNameOk = () => {
+const onUserNameOk = async () => {
+  const res = await updateUserInfo(userInfoform.value)
+  console.log(res)
   isEditUserName.value = false
 }
 
 // 更改電子信箱
+const form = ref(null)
+const rules = {
+  email: [
+    { required: true, message: '請輸入電子信箱', trigger: 'blur' },
+    { type: 'email', message: '電子信箱不正確', trigger: 'blur' }
+  ]
+}
 const isEditUserEmail = ref(false)
 const userEmailEdit = () => {
   isEditUserEmail.value = true
 }
-const onUserEmailOk = () => {
+const onUserEmailOk = async () => {
+  await form.value.validate()
+  const res = await updateUserInfo(userInfoform.value)
+  console.log(res)
   isEditUserEmail.value = false
 }
 
-// 假資料
-const list = [
-  {
-    icon: '🍽️',
-    cateName: '飲食'
-  },
-  {
-    icon: '🍉',
-    cateName: '飲料'
-  },
-  {
-    icon: '🧡',
-    cateName: '飲食'
-  },
-  {
-    icon: '🎃',
-    cateName: '飲食'
-  },
-  {
-    icon: '⚾',
-    cateName: '飲食'
-  },
-  {
-    icon: '🔮',
-    cateName: '玩具'
-  },
-  {
-    icon: '🀄',
-    cateName: '衣服'
-  },
-  {
-    icon: '🎃',
-    cateName: '飲食'
-  },
-  {
-    icon: '⚾',
-    cateName: '飲食'
-  },
-  {
-    icon: '🔮',
-    cateName: '玩具'
+const costCateList = computed(() => {
+  return cateList.value.filter((item) => item.statusCode === 0)
+})
+
+const incomeCateList = computed(() => {
+  return cateList.value.filter((item) => item.statusCode === 1)
+})
+
+//--- 發請求區 ---
+const getUserInfo = async () => {
+  const {
+    data: { data }
+  } = await getUserInfoAPI()
+  userInfoform.value.nickname = data.nickname
+  userInfoform.value.email = data.email
+}
+
+const updateUserInfo = async () => {
+  const res = await updateUserInfoAPI(userInfoform.value)
+  console.log(res)
+}
+
+const getCateList = async () => {
+  const { data } = await getCateListAPI()
+  if (data.status !== 0) {
+    return ElMessage.error('服務異常')
   }
-]
+  cateList.value = data.data
+}
+// ------------
+
+getUserInfo()
+getCateList()
 </script>
 
 <template>
@@ -75,19 +85,28 @@ const list = [
     <div class="top">
       <h3 class="title">個人資料設定</h3>
       <el-card shadow="never">
-        <el-form label-position="top" :model="userInfoform">
+        <el-form
+          label-position="top"
+          :model="userInfoform"
+          :rules="rules"
+          ref="form"
+        >
           <el-row :gutter="20">
             <!-- 使用者名稱 -->
             <el-col :span="12">
-              <el-form-item v-if="!isEditUserName" label="使用者名稱">
-                <el-input v-model="userInfoform.userName" disabled />
+              <el-form-item v-if="!isEditUserName" label="暱稱">
+                <el-input
+                  v-model="userInfoform.nickname"
+                  disabled
+                  placeholder="請輸入暱稱(限10字)"
+                />
                 <font-awesome-icon
                   :icon="['fas', 'pencil']"
                   @click="userNameEdit"
                 />
               </el-form-item>
-              <el-form-item v-else label="使用者名稱">
-                <el-input v-model="userInfoform.userName" maxlength="10" />
+              <el-form-item v-else label="暱稱">
+                <el-input v-model="userInfoform.nickname" maxlength="10" />
                 <font-awesome-icon
                   :icon="['fas', 'circle-check']"
                   @click="onUserNameOk"
@@ -97,14 +116,14 @@ const list = [
             <!-- 電子信箱 -->
             <el-col :span="12">
               <el-form-item v-if="!isEditUserEmail" label="電子信箱">
-                <el-input v-model="userInfoform.userEmail" disabled />
+                <el-input v-model="userInfoform.email" disabled />
                 <font-awesome-icon
                   :icon="['fas', 'pencil']"
                   @click="userEmailEdit"
                 />
               </el-form-item>
-              <el-form-item v-else label="電子信箱">
-                <el-input v-model="userInfoform.userEmail" maxlength="50" />
+              <el-form-item v-else label="電子信箱" prop="email">
+                <el-input v-model="userInfoform.email" maxlength="100" />
                 <font-awesome-icon
                   :icon="['fas', 'circle-check']"
                   @click="onUserEmailOk"
@@ -121,15 +140,18 @@ const list = [
       <h3 class="title">分類設定</h3>
       <el-tabs type="border-card">
         <el-tab-pane label="支出類別">
-          <categoryCom v-for="(item, index) in list" :key="index">
-            <template #emoji>{{ item.icon }}</template>
-            <template #cateName>{{ item.cateName }}</template>
+          <categoryCom v-for="item in costCateList" :key="item.id">
+            <template #emoji>{{ item.categoryPic }}</template>
+            <template #cateName>{{ item.categoryName }}</template>
           </categoryCom>
         </el-tab-pane>
-        <el-tab-pane label="收入類別">Config</el-tab-pane>
-        <!-- <div class="addCateBtnContainer">
-          <el-button class="addCateBtn">新增類別</el-button>
-        </div> -->
+        <el-tab-pane label="收入類別">
+          <categoryCom v-for="item in incomeCateList" :key="item.id">
+            <template #emoji>{{ item.categoryPic }}</template>
+            <template #cateName>{{ item.categoryName }}</template>
+          </categoryCom>
+        </el-tab-pane>
+
         <addBtn>新增類別</addBtn>
       </el-tabs>
     </div>
@@ -169,6 +191,9 @@ const list = [
       flex-wrap: wrap;
       gap: 25px;
     }
+  }
+  :deep(.el-input.is-disabled .el-input__wrapper) {
+    background-color: white;
   }
 }
 </style>
