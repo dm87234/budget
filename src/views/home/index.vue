@@ -1,14 +1,40 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import addBtn from '@/components/addBtn.vue'
 import myCalendar from './components/myCalendar.vue'
 import { CircleCloseFilled } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import {
+  formatDate,
+  formatMonth,
+  formatYear,
+  formatD
+} from '@/utils/dateFormat'
+// API
+import { getRecordsAPI, addRecordsAPI } from '@/api/records'
+import { getCateListAPI } from '@/api/category'
+
+// 儲存紀錄的數組
+const allRecords = ref([])
+const calendar = ref(null)
+
+// 分類資料
+const cateList = ref([])
+
+// 支出類別
+const costCateList = computed(() => {
+  return cateList.value.filter((item) => item.statusCode === '0')
+})
+// 收入類別
+const incomeCateList = computed(() => {
+  return cateList.value.filter((item) => item.statusCode === '1')
+})
 
 const isVisible = ref(false)
 const form = ref({
-  date: '2024-02-15',
+  date: '',
   status: '0',
-  category: '',
+  categoryId: '',
   money: 0,
   memo: ''
 })
@@ -16,77 +42,73 @@ const onEdit = (row) => {
   console.log(row)
   isVisible.value = true
   form.value = {
-    date: row.date,
-    status: '0',
-    category: row.category,
+    date: row.completeDate,
+    status: row.statusCode,
+    categoryId: row.categoryId,
     money: row.money,
     memo: row.memo
   }
   console.log(form.value)
 }
-const tableData = [
-  {
-    date: '2016-05-03',
-    category: '薪資',
-    money: '12,000',
-    memo: '3月份薪水'
-  },
-  {
-    date: '2016-05-03',
-    category: '薪資',
-    money: '12,000',
-    memo: '3月份薪水'
-  },
-  {
-    date: '2016-05-03',
-    category: '薪資',
-    money: '12,000',
-    memo: '3月份薪水'
-  },
-  {
-    date: '2016-05-03',
-    category: '薪資',
-    money: '12,000',
-    memo: '3月份薪水'
-  },
-  {
-    date: '2016-05-03',
-    category: '薪資',
-    money: '12,000',
-    memo: '3月份薪水'
-  },
-  {
-    date: '2016-05-03',
-    category: '薪資',
-    money: '12,000',
-    memo: '3月份薪水'
-  }
-]
+
 const addRecord = () => {
   isVisible.value = true
-  console.log(11)
+  form.value.date = calendar.value.openDate
 }
 
-const saveRecord = () => {
-  console.log(22)
+const onAddRecord = async () => {
+  form.value.date = formatDate(form.value.date)
+  form.value.costYear = formatYear(form.value.date)
+  form.value.costMonth = formatMonth(form.value.date)
+  form.value.costDate = formatD(form.value.date)
+  // console.log(form.value)
+
+  const { data } = await addRecordsAPI(form.value)
+  if (data.status !== 0) {
+    ElMessage.error('新增失敗')
+  }
+  ElMessage.success('新增成功')
+  isVisible.value = false
+  getAllRecords()
 }
 
-const oneMoreRecord = () => {
-  console.log(33)
+//--- 發請求區 ---
+const getAllRecords = async () => {
+  const { data } = await getRecordsAPI()
+  if (data.status !== 0) {
+    return ElMessage.error('服務異常')
+  }
+  allRecords.value = data.data
 }
+
+const getCateList = async () => {
+  const { data } = await getCateListAPI()
+  if (data.status !== 0) {
+    return ElMessage.error('服務異常')
+  }
+  cateList.value = data.data
+}
+// --------------
+
+getAllRecords()
+getCateList()
 </script>
 
 <template>
   <div class="homeContainer m50">
-    <myCalendar></myCalendar>
+    <myCalendar ref="calendar"></myCalendar>
     <addBtn @click="addRecord">新增一筆</addBtn>
-    <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column prop="date" label="日期" width="180"></el-table-column>
-      <el-table-column
-        prop="category"
-        label="類別"
-        width="180"
-      ></el-table-column>
+    <el-table :data="allRecords" stripe style="width: 100%">
+      <el-table-column prop="completeDate" label="日期" width="180">
+        <template #default="{ row }">
+          {{ formatDate(row.completeDate) }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="categoryId" label="類別" width="180">
+        <template #default="{ row }">
+          {{ row.categoryName }}
+        </template>
+      </el-table-column>
       <el-table-column prop="money" label="金額"></el-table-column>
       <el-table-column prop="memo" label="備註"></el-table-column>
       <el-table-column label="操作">
@@ -122,17 +144,35 @@ const oneMoreRecord = () => {
         <el-row :gutter="20">
           <el-col :span="7">
             <el-form-item>
-              <el-select fit-input-width v-model="form.status">
+              <el-select
+                @change="form.categoryId = ''"
+                fit-input-width
+                v-model="form.status"
+              >
                 <el-option label="支出" value="0" />
                 <el-option label="收入" value="1" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="17">
-            <el-form-item>
-              <el-select placeholder="選擇類別">
-                <el-option label="Zone No.1" value="shanghai" />
-                <el-option label="Zone No.2" value="beijing" />
+            <el-form-item v-if="form.status === '0'">
+              <el-select v-model="form.categoryId" placeholder="選擇類別">
+                <el-option
+                  v-for="item in costCateList"
+                  :key="item.id"
+                  :label="item.categoryName"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item v-else>
+              <el-select v-model="form.categoryId" placeholder="選擇類別">
+                <el-option
+                  v-for="item in incomeCateList"
+                  :key="item.id"
+                  :label="item.categoryName"
+                  :value="item.id"
+                />
               </el-select>
             </el-form-item>
           </el-col>
@@ -158,7 +198,9 @@ const oneMoreRecord = () => {
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" style="width: 100px">儲存</el-button>
+          <el-button @click="onAddRecord()" type="primary" style="width: 100px"
+            >儲存</el-button
+          >
           <el-button type="primary" style="width: 100px">再記一筆</el-button>
         </div>
       </template>

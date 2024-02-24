@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 // 點選的日期
-let pickDateValue = ref(0)
+let pickDateValue = ref()
 // 星期的數組
 const header = ref(['一', '二', '三', '四', '五', '六', '日'])
 // 上个月剩余天数
@@ -165,9 +165,10 @@ const nextMonth = (date) => {
   calculateDays()
 }
 
+let openDate = ref('')
 const pickDate = (date) => {
   pickDateValue.value = date
-  console.log(date)
+  openDate.value = `${currentYear.value}-${currentMonth.value}-${date}`
 }
 
 const holiday = [
@@ -195,6 +196,12 @@ const costDate = [
   { date: '20240229' }
 ]
 initCalendar()
+
+onMounted(() => {
+  openDate.value = `${currentYear.value}-${currentMonth.value}-${currentDate.value}`
+})
+
+defineExpose({ openDate })
 </script>
 
 <template>

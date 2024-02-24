@@ -4,11 +4,10 @@ import categoryCom from './components/categoryCom.vue'
 import addBtn from '@/components/addBtn.vue'
 import { ClickOutside as vClickOutside } from 'element-plus'
 import CateEdit from './components/CateEdit.vue'
-
+import { ElMessage, ElMessageBox } from 'element-plus'
 // API
 import { getUserInfoAPI, updateUserInfoAPI } from '@/api/user'
 import { getCateListAPI, getAllEmojiAPI, deleteCateAPI } from '@/api/category'
-import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 儲存使用者基本資料
 const userInfoform = ref({
