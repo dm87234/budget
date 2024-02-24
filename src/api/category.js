@@ -8,10 +8,27 @@ export const getAllEmojiAPI = () => {
   return request.get('/category/allemoji')
 }
 // 新增分類
-export const addCateAPI = ({ categoryName, statusCode, emoji }) => {
+export const addCateAPI = ({ categoryName, statusCode, categoryPic }) => {
   return request.post('/category/addCate', {
     categoryName,
     statusCode,
-    categoryPic: emoji
+    categoryPic
+  })
+}
+
+// 編輯分類
+export const editCateAPI = ({ id, categoryName, categoryPic }) => {
+  return request.put('/category/updateCate', {
+    id,
+    categoryName,
+    categoryPic
+  })
+}
+
+// 刪除分類
+export const deleteCateAPI = (id) => {
+  console.log(id)
+  return request.delete('/category/delCate', {
+    params: { id }
   })
 }
