@@ -1,5 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { getMonthlyRecordsAPI } from '@/api/records'
+import { formatMoney } from '@/utils/moneyFormat'
+
 // 點選的日期
 let pickDateValue = ref()
 // 星期的數組
@@ -18,6 +21,7 @@ const currentMonth = ref(0)
 const currentDate = ref(0)
 
 const currentMonthDay = ref([])
+
 // 获取这个月1号的星期数
 const getMonthFirstDay = (year, month) => {
   return new Date(year, month - 1, 1).getDay()
@@ -65,6 +69,23 @@ const calculateDays = () => {
 
   // 拼接數組
   currentMonthDay.value = []
+  const incomeDate = computed(() => {
+    return MonthlyRecords.value
+      .filter((item) => item.statusCode === '1')
+      .map(
+        (item) =>
+          item.costYear + item.costMonth + item.costDate + '$' + item.money
+      )
+  })
+  const costDate = computed(() => {
+    return MonthlyRecords.value
+      .filter((item) => item.statusCode === '0')
+      .map(
+        (item) =>
+          item.costYear + item.costMonth + item.costDate + '$' + item.money
+      )
+  })
+  // console.log(costDate)
   let yearStr = currentYear.value.toString()
   let MonthStr =
     currentMonth.value < 10
@@ -77,23 +98,30 @@ const calculateDays = () => {
       date: itemStr,
       isholiday: false,
       income: false,
-      cost: false
+      cost: false,
+      incomeTotal: 0,
+      costTotal: 0
     })
   }
+  // console.log(currentMonthDay.value)
   currentMonthDay.value.forEach((item) => {
     for (let i = 0; i < holiday.length; i++) {
       if (item.date === holiday[i].date) {
         item.isholiday = true
       }
     }
-    for (let i = 0; i < incomeDate.length; i++) {
-      if (item.date === incomeDate[i].date) {
+    for (let i = 0; i < incomeDate.value.length; i++) {
+      if (item.date === incomeDate.value[i].substring(0, 8)) {
         item.income = true
+        let money = +incomeDate.value[i].substring(9)
+        item.incomeTotal += money
       }
     }
-    for (let i = 0; i < costDate.length; i++) {
-      if (item.date === costDate[i].date) {
+    for (let i = 0; i < costDate.value.length; i++) {
+      if (item.date === costDate.value[i].substring(0, 8)) {
         item.cost = true
+        let money = +costDate.value[i].substring(9)
+        item.costTotal += money
       }
     }
   })
@@ -143,6 +171,7 @@ const initCalendar = () => {
 
 // 上个月
 const preMonth = (date) => {
+  // console.log(Boolean(date))
   pickDateValue.value = date
   if (currentMonth.value === 1) {
     currentMonth.value = 12
@@ -150,7 +179,12 @@ const preMonth = (date) => {
   } else {
     currentMonth.value--
   }
-  calculateDays()
+  if (date) {
+    openDate.value = `${currentYear.value}-${currentMonth.value}-${date}`
+    emit('pickedDate')
+  }
+  getMonthlyRecords()
+  // calculateDays()
 }
 
 // 下一月
@@ -162,57 +196,54 @@ const nextMonth = (date) => {
   } else {
     currentMonth.value++
   }
-  calculateDays()
+  if (date) {
+    openDate.value = `${currentYear.value}-${currentMonth.value}-${date}`
+    emit('pickedDate')
+  }
+  getMonthlyRecords()
 }
 
 let openDate = ref('')
+const emit = defineEmits(['pickedDate'])
 const pickDate = (date) => {
   pickDateValue.value = date
   openDate.value = `${currentYear.value}-${currentMonth.value}-${date}`
+  emit('pickedDate')
 }
 
-const holiday = [
-  {
-    date: '20240219',
-    year: '2024',
-    name: '中華民國開國紀念日',
-    isholiday: '是',
-    holidaycategory: '放假之紀念日及節日',
-    description: '全國各機關學校放假一日。'
-  },
-  {
-    date: '20240228',
-    year: '2024',
-    name: null,
-    isholiday: '是',
-    holidaycategory: '調整放假日',
-    description: null
-  }
-]
-const incomeDate = [{ date: '20240203' }, { date: '20240220' }]
-const costDate = [
-  { date: '20240203' },
-  { date: '20240220' },
-  { date: '20240229' }
-]
+// const incomeDate = [{ date: '20240203' }, { date: '20240220' }]
+
+// 月收支紀錄
+const MonthlyRecords = ref([])
+const getMonthlyRecords = async () => {
+  const {
+    data: { data }
+  } = await getMonthlyRecordsAPI()
+  MonthlyRecords.value = data
+  // console.log(MonthlyRecords.value)
+  calculateDays()
+}
+
+const holiday = []
 initCalendar()
 
 onMounted(() => {
   openDate.value = `${currentYear.value}-${currentMonth.value}-${currentDate.value}`
 })
 
-defineExpose({ openDate })
+getMonthlyRecords()
+defineExpose({ openDate, getMonthlyRecords })
 </script>
 
 <template>
   <div class="calendarContainer">
     <!-- 月份切換 -->
     <div class="toolbar">
-      <div class="changeMonthBtn" @click="preMonth">
+      <div class="changeMonthBtn" @click="preMonth()">
         <font-awesome-icon :icon="['fas', 'chevron-left']" />
       </div>
       <div class="date">{{ currentYear }}年{{ currentMonth }}月</div>
-      <div class="changeMonthBtn" @click="nextMonth">
+      <div class="changeMonthBtn" @click="nextMonth()">
         <font-awesome-icon :icon="['fas', 'chevron-right']" />
       </div>
     </div>
@@ -250,8 +281,12 @@ defineExpose({ openDate })
       >
         {{ index + 1 }}
         <div class="records" v-if="item.income || item.cost">
-          <div class="income" v-if="item.income"></div>
-          <div class="cost" v-if="item.cost"></div>
+          <div class="income" v-if="item.income">
+            <span>收入: {{ formatMoney(item.incomeTotal) }}</span>
+          </div>
+          <div class="cost" v-if="item.cost">
+            <span>支出: {{ formatMoney(item.costTotal) }}</span>
+          </div>
         </div>
       </div>
       <!-- 下個月補幾天 -->
@@ -319,7 +354,7 @@ defineExpose({ openDate })
     .date {
       cursor: pointer;
       font-weight: bold;
-      height: 50px;
+      height: 60px;
       padding-top: 7px;
       text-align: center;
       border-bottom: 1px solid #e7e8ea;
@@ -353,22 +388,28 @@ defineExpose({ openDate })
       background: #fafafa;
     }
     .records {
+      margin-top: 10px;
+      padding-left: 5px;
       height: 20px;
       display: flex;
+      flex-direction: column;
       gap: 5px;
-      justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       .income {
-        width: 5px;
-        height: 5px;
-        background: #ffb428;
-        border-radius: 50%;
+        // width: 5px;
+        // height: 5px;
+        // background: #ffb428;
+        // border-radius: 50%;
+        font-size: 12px;
+        color: #178800;
       }
       .cost {
-        width: 5px;
-        height: 5px;
-        background: #178800;
-        border-radius: 50%;
+        // width: 5px;
+        // height: 5px;
+        // background: #178800;
+        // border-radius: 50%;
+        font-size: 12px;
+        color: #f56c6c;
       }
     }
   }

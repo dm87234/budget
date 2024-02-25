@@ -1,8 +1,10 @@
 import request from '@/utils/request'
 
 // 獲取記錄
-export const getRecordsAPI = () => {
-  return request.get('/records/getRecords')
+export const getRecordsAPI = (date) => {
+  return request.get('/records/getRecords', {
+    params: { date }
+  })
 }
 
 // 新增紀錄
@@ -37,9 +39,14 @@ export const editRecordsAPI = ({ id, categoryId, money, memo }) => {
 }
 
 // 刪除紀錄
-export const deleteCateAPI = (id) => {
+export const deleteRecordAPI = (id) => {
   console.log(id)
   return request.delete('/records/delrecords', {
     params: { id }
   })
+}
+
+// 獲取記錄
+export const getMonthlyRecordsAPI = () => {
+  return request.get('/records/getMonthlyRecords')
 }

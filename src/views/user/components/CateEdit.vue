@@ -22,7 +22,7 @@ const onSelectEmoji = (index, emoji) => {
 // 提交到後端
 const emit = defineEmits(['success'])
 const submitCate = async () => {
-  console.log(cateForm.value)
+  // console.log(cateForm.value)
   if (!cateForm.value.categoryName) {
     return ElMessage.error('請輸入類別名稱')
   }
@@ -31,14 +31,14 @@ const submitCate = async () => {
   }
   // 新增類別
   if (!cateForm.value.id) {
-    console.log('新增')
+    // console.log('新增')
     const { data } = await addCateAPI(cateForm.value)
     if (data.status !== 0) {
       ElMessage.error('新增類別失敗')
     }
     ElMessage.success('新增類別成功')
   } else {
-    console.log('編輯')
+    // console.log('編輯')
     const { data } = await editCateAPI(cateForm.value)
     if (data.status !== 0) {
       ElMessage.error('編輯類別失敗')
