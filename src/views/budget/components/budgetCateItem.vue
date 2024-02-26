@@ -1,15 +1,48 @@
 <script setup>
 import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { addCateBudgetAPI, updateCateBudgetAPI } from '@/api/budget'
+import { isBudgetOk } from '@/utils/moneyFormat'
 const isBudgetCateEdit = ref(false)
 const props = defineProps({
-  message: Object
+  cateItem: Object,
+  year: String,
+  month: String
 })
-const input = ref(props.message.cateBudget)
+const input = ref()
+const emit = defineEmits(['success'])
 const onBudgetCateEdit = () => {
-  // console.log(props.message.id)
+  input.value = props.cateItem.budget
   isBudgetCateEdit.value = true
 }
-const onBudgetCateOk = () => {
+const onBudgetCateOk = async () => {
+  if (props.cateItem.id) {
+    if (!isBudgetOk(input.value)) {
+      return ElMessage.error('預算只能是正整數或0')
+    }
+    const { data } = await updateCateBudgetAPI({
+      id: props.cateItem.id,
+      budget: input.value
+    })
+    if (data.status !== 0) {
+      return ElMessage.error('服務異常')
+    }
+    emit('success')
+  } else {
+    if (!isBudgetOk(input.value)) {
+      return ElMessage.error('預算只能是正整數或0')
+    }
+    const { data } = await addCateBudgetAPI({
+      categoryId: props.cateItem.cateId,
+      budget: input.value,
+      budgetYear: props.year,
+      budgetMonth: props.month
+    })
+    if (data.status !== 0) {
+      return ElMessage.error('服務異常')
+    }
+    emit('success')
+  }
   isBudgetCateEdit.value = false
 }
 </script>
@@ -31,7 +64,12 @@ const onBudgetCateOk = () => {
           <el-input
             v-else
             v-model="input"
+            maxlength="9"
             style="width: 120px; font-size: 16px"
+            :formatter="
+              (value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            "
+            :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
           />
           <font-awesome-icon
             v-if="!isBudgetCateEdit"

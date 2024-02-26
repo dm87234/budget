@@ -9,6 +9,10 @@ import { formatMoney } from '@/utils/moneyFormat'
 // API
 import { getRecordsAPI, deleteRecordAPI } from '@/api/records'
 import { getCateListAPI } from '@/api/category'
+// Store
+import { useCateStore } from '@/stores/modules/catrgory'
+
+const CateStore = useCateStore()
 
 // 儲存紀錄的數組
 const allRecords = ref([])
@@ -58,6 +62,7 @@ const getCateList = async () => {
   if (data.status !== 0) {
     return ElMessage.error('服務異常')
   }
+  CateStore.setCateList(data.data)
   cateList.value = data.data
 }
 

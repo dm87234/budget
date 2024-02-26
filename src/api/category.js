@@ -27,7 +27,6 @@ export const editCateAPI = ({ id, categoryName, categoryPic }) => {
 
 // 刪除分類
 export const deleteCateAPI = (id) => {
-  console.log(id)
   return request.delete('/category/delCate', {
     params: { id }
   })
