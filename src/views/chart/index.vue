@@ -173,71 +173,58 @@ const getBalance = async () => {
   setTimeout(() => {
     let options = {
       tooltip: {
-        trigger: 'axis'
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
       },
       legend: {
-        data: ['月收入', '月支出', '月結餘']
+        data: ['月結餘', '月支出', '月收入']
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
       },
       xAxis: [
         {
           type: 'category',
-          data: yearMonth,
-          axisPointer: {
-            type: 'shadow'
-          }
+          axisTick: {
+            show: false
+          },
+          data: yearMonth
         }
       ],
       yAxis: [
         {
-          type: 'value',
-          name: '收支',
-          min: 0,
-          max: 250,
-          interval: 50,
-          axisLabel: {
-            formatter: '${value}'
-          }
-        },
-        {
-          type: 'value',
-          name: '結餘',
-          min: -125,
-          max: 250,
-          interval: 50,
-          axisLabel: {
-            formatter: '${value}'
-          }
+          type: 'value'
         }
       ],
       series: [
         {
-          name: '月收入',
-          type: 'bar',
-          tooltip: {
-            valueFormatter: function (value) {
-              return value + ' ml'
-            }
-          },
-          data: totalIncome
-        },
-        {
           name: '月支出',
           type: 'bar',
-          tooltip: {
-            valueFormatter: function (value) {
-              return value + ' ml'
-            }
+          emphasis: {
+            focus: 'series'
           },
           data: totalCost
         },
         {
+          name: '月收入',
+          type: 'bar',
+          stack: 'Total',
+          emphasis: {
+            focus: 'series'
+          },
+          data: totalIncome
+        },
+        {
           name: '月結餘',
           type: 'line',
-          yAxisIndex: 1,
-          tooltip: {
-            valueFormatter: function (value) {
-              return value + ' °C'
-            }
+          stack: 'Total',
+          emphasis: {
+            focus: 'series'
           },
           data: balance
         }
