@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import budgetCateItem from './components/budgetCateItem.vue'
-import selectMonth from './components/selectMonth.vue'
+import selectMonth from '@/components/selectMonth.vue'
 import { ElMessage } from 'element-plus'
 import { formatMoney } from '@/utils/moneyFormat'
 // API
@@ -67,7 +67,7 @@ const getTotalBudget = async () => {
   const {
     data: { data }
   } = await getTotalBudgetAPI(month.value.currentYear, month.value.exposeMonth)
-  console.log(data)
+  // console.log(data)
   if (data.length > 0) {
     TotalBudgetList.value = data
     monthlyBudget.value = TotalBudgetList.value[0].totalBudget

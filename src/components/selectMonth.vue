@@ -35,6 +35,7 @@ const preMonth = () => {
   exposeMonth.value =
     currentMonth.value < 10 ? '0' + currentMonth.value : currentMonth.value
   emit('changeMonth', exposeMonth.value, currentYear.value)
+  // emit('changeMonth', { param1: exposeMonth.value, param2: currentYear.value })
 }
 
 // 下一月
