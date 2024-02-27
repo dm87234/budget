@@ -80,19 +80,43 @@ const onPickDate = () => {
 
 getAllRecords()
 getCateList()
+
+const tableData = [
+  {
+    date: '2016-05-03',
+    name: 'Tom',
+    address: 'No. 189, Grove St, Los Angeles'
+  },
+  {
+    date: '2016-05-02',
+    name: 'Tom',
+    address: 'No. 189, Grove St, Los Angeles'
+  },
+  {
+    date: '2016-05-04',
+    name: 'Tom',
+    address: 'No. 189, Grove St, Los Angeles'
+  },
+  {
+    date: '2016-05-01',
+    name: 'Tom',
+    address: 'No. 189, Grove St, Los Angeles'
+  }
+]
 </script>
 
 <template>
   <div class="homeContainer m50">
     <myCalendar ref="calendar" @pickedDate="onPickDate"></myCalendar>
     <addBtn @click="EditRecord({})">新增一筆</addBtn>
+
     <el-table :data="allRecords" stripe style="width: 100%">
-      <el-table-column prop="completeDate" label="日期" width="180">
+      <el-table-column prop="completeDate" label="日期" width="100">
         <template #default="{ row }">
           {{ formatDate(row.completeDate) }}
         </template>
       </el-table-column>
-      <el-table-column prop="categoryId" label="類別" width="180">
+      <el-table-column prop="categoryId" label="類別">
         <template #default="{ row }">
           <!-- <span>{{ row.statusCode }}</span> -->
           <img
@@ -110,16 +134,34 @@ getCateList()
         </template>
       </el-table-column>
       <el-table-column prop="memo" label="備註"></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="75">
         <template #default="{ row }">
           <el-button size="small" type="success" @click="EditRecord(row)"
             >編輯</el-button
           >
+        </template>
+      </el-table-column>
+      <el-table-column width="75">
+        <template #default="{ row }">
           <el-button @click="onDelRecord(row.id)" size="small" type="danger"
             >刪除</el-button
           >
         </template>
       </el-table-column>
+      <!-- <el-table-column label="操作">
+        <template #default="{ row }">
+          <div>
+            <el-button size="small" type="success" @click="EditRecord(row)"
+              >編輯</el-button
+            >
+          </div>
+          <div>
+            <el-button @click="onDelRecord(row.id)" size="small" type="danger"
+              >刪除</el-button
+            >
+          </div>
+        </template>
+      </el-table-column> -->
     </el-table>
     <!-- 彈窗 -->
     <editRecord
@@ -136,6 +178,13 @@ getCateList()
   display: flex;
   flex-direction: column;
   gap: 10px;
+  @include mobile {
+    margin: 0;
+  }
+  @include pad {
+    margin: 0;
+  }
+
   .statusIcon {
     width: 20px;
     height: 20px;
@@ -147,6 +196,10 @@ getCateList()
   :deep(.el-dialog__header) {
     display: flex;
     justify-content: space-between;
+  }
+  .homeBtnWrapper {
+    display: flex;
+    gap: 10px;
   }
 }
 </style>

@@ -4,10 +4,17 @@ $white_color:#fff;
 $text_color:#333;
 $button_color:#E37B58;
 
-$container-width-lg: 80%;
-$container-width-md: 90%;
-$container-width-sm: 94%;
-
 @mixin transition_ease {
   transition: all .3s ease;
+}
+@mixin pad{
+  @media(min-width:768px) and (max-width:1023.98px){
+    @content;
+  }
+}
+
+@mixin mobile{
+  @media(max-width:767.98px){
+    @content;
+  }
 }

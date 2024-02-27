@@ -284,6 +284,12 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .chartContainer {
+  @include mobile {
+    margin: 0;
+  }
+  @include pad {
+    margin: 0;
+  }
   :deep(.el-card__body) {
     display: flex;
     justify-content: space-evenly;
@@ -300,18 +306,30 @@ onMounted(() => {
       height: 500px;
       display: flex;
       justify-content: center;
+      @include mobile {
+        width: 350px;
+        height: 90vh;
+      }
     }
     #monthlyIncome {
       width: 600px;
       height: 500px;
       display: flex;
       justify-content: center;
+      @include mobile {
+        width: 350px;
+        height: 90vh;
+      }
     }
     #balance {
       width: 600px;
       height: 500px;
       display: flex;
       justify-content: center;
+      @include mobile {
+        width: 350px;
+        height: 90vh;
+      }
     }
     .totalWrapper {
       width: 100%;

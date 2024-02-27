@@ -106,6 +106,13 @@ const onBudgetCateOk = async () => {
   justify-content: flex-start;
   padding: 5px 10px;
   gap: 15px;
+
+  @include pad {
+    width: 100%;
+  }
+  @include mobile {
+    width: 100%;
+  }
   .fa-pencil {
     color: #576955;
   }

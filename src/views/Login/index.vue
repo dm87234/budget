@@ -219,6 +219,9 @@ const onRegister = async () => {
   background-size: cover;
   display: flex;
   justify-content: center;
+  @include mobile {
+    height: 100vh;
+  }
 
   .wrapper {
     width: 76%;
@@ -228,6 +231,9 @@ const onRegister = async () => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    @include mobile {
+      width: 100vw;
+    }
 
     .title {
       // background: rgb(96, 98, 230);
@@ -248,6 +254,9 @@ const onRegister = async () => {
         flex-direction: column;
         align-items: center;
         gap: 20px;
+        @include mobile {
+          margin-right: 0;
+        }
         p {
           font-size: 24px;
           text-align: center;
@@ -267,6 +276,9 @@ const onRegister = async () => {
       .right {
         img {
           width: 600px;
+          @include mobile {
+            display: none;
+          }
         }
       }
     }

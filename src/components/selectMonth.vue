@@ -81,6 +81,13 @@ defineExpose({
 .selectMonthBox {
   margin-bottom: 20px;
   font-size: 30px;
+  @include mobile {
+    font-size: 20px;
+    margin-bottom: 10px;
+    :deep(.el-card__body) {
+      padding: 10px;
+    }
+  }
   .changeMonthBtn {
     cursor: pointer;
   }

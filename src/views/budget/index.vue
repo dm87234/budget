@@ -116,53 +116,55 @@ onMounted(() => {
     <selectMonth ref="month" @changeMonth="onChangeMonth"></selectMonth>
     <!-- 總預算 -->
     <el-card shadow="never">
-      <div class="left">
-        <el-progress
-          type="circle"
-          :percentage="percentage"
-          color="#2ED573"
-          stroke-width="12"
-        >
-          <template #default="{ percentage }">
-            <span class="percentage-value">{{ percentage }}%</span>
-          </template>
-        </el-progress>
-      </div>
-      <div class="right">
-        <el-form>
-          <el-form-item label="本月總預算">
-            <el-input
-              ref="inp"
-              v-model="monthlyBudget"
-              maxlength="9"
-              v-bind:readonly="isDisabled"
-              size="large"
-              style="width: 200px; font-size: 20px"
-              :formatter="
-                (value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-              "
-              :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-            />
-            <font-awesome-icon
-              v-if="!isEditTotalBudget"
-              :icon="['fas', 'pencil']"
-              @click="onTotalBudgetEdit"
-            />
-            <font-awesome-icon
-              v-else
-              :icon="['fas', 'circle-check']"
-              @click="onTotalBudgetOk"
-            />
-          </el-form-item>
-        </el-form>
-        <el-descriptions column="1">
-          <el-descriptions-item label="本月總支出">
-            {{ formatMoney(monthlyTotalCost) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="剩餘">
-            {{ formatMoney(monthlyBudget - monthlyTotalCost) }}
-          </el-descriptions-item>
-        </el-descriptions>
+      <div class="monthlyBudgetBox">
+        <div class="left">
+          <el-progress
+            type="circle"
+            :percentage="percentage"
+            color="#2ED573"
+            stroke-width="12"
+          >
+            <template #default="{ percentage }">
+              <span class="percentage-value">{{ percentage }}%</span>
+            </template>
+          </el-progress>
+        </div>
+        <div class="right">
+          <el-form>
+            <el-form-item label="本月總預算">
+              <el-input
+                ref="inp"
+                v-model="monthlyBudget"
+                maxlength="9"
+                v-bind:readonly="isDisabled"
+                size="large"
+                style="width: 200px; font-size: 20px"
+                :formatter="
+                  (value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                "
+                :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+              />
+              <font-awesome-icon
+                v-if="!isEditTotalBudget"
+                :icon="['fas', 'pencil']"
+                @click="onTotalBudgetEdit"
+              />
+              <font-awesome-icon
+                v-else
+                :icon="['fas', 'circle-check']"
+                @click="onTotalBudgetOk"
+              />
+            </el-form-item>
+          </el-form>
+          <el-descriptions column="1">
+            <el-descriptions-item label="本月總支出">
+              {{ formatMoney(monthlyTotalCost) }}
+            </el-descriptions-item>
+            <el-descriptions-item label="剩餘">
+              {{ formatMoney(monthlyBudget - monthlyTotalCost) }}
+            </el-descriptions-item>
+          </el-descriptions>
+        </div>
       </div>
     </el-card>
     <div class="notice">
@@ -218,6 +220,9 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .budgetContainer {
+  @include mobile {
+    margin: 0;
+  }
   .percentage-value {
     font-size: 28px;
   }
@@ -235,6 +240,16 @@ onMounted(() => {
   }
   :deep(.el-input.is-disabled .el-input__wrapper) {
     background-color: white;
+  }
+  .monthlyBudgetBox {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 50px;
+    @include mobile {
+      flex-direction: column;
+      gap: 10px;
+    }
   }
   .fa-circle-check,
   .fa-pencil {
@@ -256,6 +271,9 @@ onMounted(() => {
     justify-content: space-between;
     align-items: center;
     font-size: 16px;
+    @include mobile {
+      font-size: 13px;
+    }
     .danger {
       color: #ff2d2d;
     }

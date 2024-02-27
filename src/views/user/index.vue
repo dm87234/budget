@@ -152,7 +152,7 @@ getAllEmoji()
         >
           <el-row :gutter="20">
             <!-- 使用者名稱 -->
-            <el-col :span="12">
+            <el-col :xs="24" :span="12">
               <el-form-item v-if="!isEditUserName" label="暱稱">
                 <el-input
                   v-model="userInfoform.nickname"
@@ -173,7 +173,7 @@ getAllEmoji()
               </el-form-item>
             </el-col>
             <!-- 電子信箱 -->
-            <el-col :span="12">
+            <el-col :xs="24" :span="12">
               <el-form-item v-if="!isEditUserEmail" label="電子信箱">
                 <el-input v-model="userInfoform.email" disabled />
                 <font-awesome-icon
@@ -210,7 +210,12 @@ getAllEmoji()
           </categoryCom>
         </el-tab-pane>
         <el-tab-pane label="收入類別">
-          <categoryCom v-for="item in incomeCateList" :key="item.id">
+          <categoryCom
+            v-for="item in incomeCateList"
+            :key="item.id"
+            @click="onEditCate($event, item)"
+            v-click-outside="onClickOutside"
+          >
             <template #emoji>{{ item.categoryPic }}</template>
             <template #cateName>{{ item.categoryName }}</template>
           </categoryCom>
@@ -244,6 +249,12 @@ getAllEmoji()
 
 <style lang="scss" scoped>
 .settings_container {
+  @include mobile {
+    margin: 0;
+  }
+  @include pad {
+    margin: 0;
+  }
   .title {
     font-size: 26px;
     color: $text_color;

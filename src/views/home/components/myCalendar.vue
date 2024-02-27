@@ -282,10 +282,12 @@ defineExpose({ openDate, getMonthlyRecords })
         {{ index + 1 }}
         <div class="records" v-if="item.income || item.cost">
           <div class="income" v-if="item.income">
-            <span>收入: {{ formatMoney(item.incomeTotal) }}</span>
+            <span>收入: </span>
+            <span>{{ formatMoney(item.incomeTotal) }}</span>
           </div>
           <div class="cost" v-if="item.cost">
-            <span>支出: {{ formatMoney(item.costTotal) }}</span>
+            <span>支出: </span>
+            <span>{{ formatMoney(item.costTotal) }}</span>
           </div>
         </div>
       </div>
@@ -315,6 +317,12 @@ defineExpose({ openDate, getMonthlyRecords })
   display: flex;
   flex-direction: column;
   background: white;
+  @include mobile {
+    width: 95vw;
+  }
+  @include pad {
+    width: 95vw;
+  }
 
   .toolbar {
     display: flex;
@@ -323,6 +331,9 @@ defineExpose({ openDate, getMonthlyRecords })
     justify-content: space-between;
     align-items: center;
     padding: 10px 30px;
+    @include mobile {
+      font-size: 18px;
+    }
     .changeMonthBtn {
       cursor: pointer;
     }
@@ -332,9 +343,6 @@ defineExpose({ openDate, getMonthlyRecords })
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     font-family: Arial, Helvetica, sans-serif;
-    // div {
-    //   border: 1px solid #e7e8ea;
-    // }
     .weekday {
       height: 40px;
       display: flex;
@@ -343,6 +351,9 @@ defineExpose({ openDate, getMonthlyRecords })
       border-top: 1px solid #e7e8ea;
       border-bottom: 1px solid #e7e8ea;
       border-right: 1px solid #e7e8ea;
+      @include mobile {
+        height: 25px;
+      }
     }
 
     .holiday {
@@ -362,6 +373,10 @@ defineExpose({ openDate, getMonthlyRecords })
       &:nth-last-child(-n + 7) {
         border-bottom: none;
       }
+      @include mobile {
+        font-size: 14px;
+        height: 75px;
+      }
     }
     .active {
       color: white;
@@ -374,11 +389,19 @@ defineExpose({ openDate, getMonthlyRecords })
         height: 28px;
         position: absolute;
         border-radius: 50%;
-        top: 0px;
-        left: 35px;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
         background: #36589d;
         opacity: 0.9;
         z-index: -1;
+        @include mobile {
+          width: 24px;
+          height: 24px;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+        }
       }
     }
     div:nth-of-type(7n) {
@@ -395,21 +418,27 @@ defineExpose({ openDate, getMonthlyRecords })
       flex-direction: column;
       gap: 5px;
       align-items: flex-start;
+      @include mobile {
+        margin-top: 5px;
+        padding: 0;
+        align-items: center;
+      }
       .income {
-        // width: 5px;
-        // height: 5px;
-        // background: #ffb428;
-        // border-radius: 50%;
         font-size: 12px;
         color: #178800;
+        @include mobile {
+          display: flex;
+          flex-direction: column;
+        }
       }
+
       .cost {
-        // width: 5px;
-        // height: 5px;
-        // background: #178800;
-        // border-radius: 50%;
         font-size: 12px;
         color: #f56c6c;
+        @include mobile {
+          display: flex;
+          flex-direction: column;
+        }
       }
     }
   }
