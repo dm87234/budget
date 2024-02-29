@@ -1,7 +1,11 @@
 <script setup>
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores'
+
 const router = useRouter()
 const logOut = () => {
+  const userStore = useUserStore()
+  userStore.setToken('')
   router.push('/login')
 }
 </script>
@@ -55,7 +59,7 @@ const logOut = () => {
         <font-awesome-icon :icon="['fas', 'gear']" />
         <div class="menuText">設定</div>
       </router-link>
-      <div @click="logOut" class="bottom">
+      <div @click="logOut()" class="bottom">
         <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
         <div class="menuText">登出</div>
       </div>

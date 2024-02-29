@@ -61,9 +61,12 @@ const onLogin = async () => {
   await form.value.validate()
   // 發請求
   const res = await userLoginAPI(formModel.value)
+  if (res.data.status === 1) {
+    return ElMessage.error('服務異常')
+  }
   userStore.setToken(res.data.token)
   ElMessage.success('登入成功')
-  router.push('/')
+  router.push('/home')
 }
 
 // 註冊

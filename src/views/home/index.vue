@@ -148,20 +148,6 @@ const tableData = [
           >
         </template>
       </el-table-column>
-      <!-- <el-table-column label="操作">
-        <template #default="{ row }">
-          <div>
-            <el-button size="small" type="success" @click="EditRecord(row)"
-              >編輯</el-button
-            >
-          </div>
-          <div>
-            <el-button @click="onDelRecord(row.id)" size="small" type="danger"
-              >刪除</el-button
-            >
-          </div>
-        </template>
-      </el-table-column> -->
     </el-table>
     <!-- 彈窗 -->
     <editRecord
