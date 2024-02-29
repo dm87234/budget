@@ -1,0 +1,1 @@
+import{i as e}from"./request-BLRlW432.js";const o=({username:s,password:r,email:t})=>e.post("/api/reguser",{username:s,password:r,email:t}),u=({username:s,password:r})=>e.post("/api/login",{username:s,password:r}),a=()=>e.get("/my/userinfo"),i=({nickname:s,email:r})=>e.post("/my/userinfo",{nickname:s,email:r});export{o as a,i as b,a as g,u};
