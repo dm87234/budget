@@ -72,6 +72,7 @@ const getTotalBudget = async () => {
     TotalBudgetList.value = data
     monthlyBudget.value = TotalBudgetList.value[0].totalBudget
   }
+  console.log('本月預算1--' + monthlyBudget.value)
 }
 
 const getCateBudget = async () => {
@@ -86,12 +87,13 @@ const getCateBudget = async () => {
   allCateTotalCost.value = cateBudgetList.value.reduce((sum, item) => {
     return sum + item.budget
   }, 0)
-  percentage.value = parseInt(
-    ((monthlyBudget.value - monthlyTotalCost.value) / monthlyBudget.value) * 100
-  )
-  if (percentage.value < 0) {
-    percentage.value = 0
-  }
+  // console.log('本月預算2--' + monthlyBudget.value)
+  // percentage.value = parseInt(
+  //   ((monthlyBudget.value - monthlyTotalCost.value) / monthlyBudget.value) * 100
+  // )
+  // if (percentage.value < 0) {
+  //   percentage.value = 0
+  // }
 }
 // ---------------
 
@@ -120,7 +122,20 @@ onMounted(() => {
         <div class="left">
           <el-progress
             type="circle"
-            :percentage="percentage"
+            :percentage="
+              isNaN(
+                parseInt(
+                  ((monthlyBudget - monthlyTotalCost) / monthlyBudget) * 100
+                )
+              ) ||
+              parseInt(
+                ((monthlyBudget - monthlyTotalCost) / monthlyBudget) * 100
+              ) < 0
+                ? 0
+                : parseInt(
+                    ((monthlyBudget - monthlyTotalCost) / monthlyBudget) * 100
+                  )
+            "
             color="#2ED573"
             stroke-width="12"
           >
