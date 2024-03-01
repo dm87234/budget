@@ -7,6 +7,12 @@ $button_color:#E37B58;
 @mixin transition_ease {
   transition: all .3s ease;
 }
+@mixin bigPad{
+  @media(min-width:1024px) and (max-width:1199.98px){
+    @content;
+  }
+}
+
 @mixin pad{
   @media(min-width:768px) and (max-width:1023.98px){
     @content;

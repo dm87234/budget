@@ -20,38 +20,9 @@ const balanceChart = ref(null)
 let myChart = null
 let myChart2 = null
 let myChart3 = null
-// const setPieChart = () => {
-//   const costChart = echarts.init(document.getElementById('monthlyCost'))
-//   const costChartOpt = {
-//     // title: {
-//     //   text: 'Referer of a Website',
-//     //   left: 'center'
-//     // },
-//     tooltip: {
-//       trigger: 'item'
-//     },
-//     legend: {
-//       orient: 'vertical',
-//       left: 'left'
-//     },
-//     series: [
-//       {
-//         name: 'Access From',
-//         type: 'pie',
-//         radius: '50%',
-//         data: monthlyCostList.value,
-//         emphasis: {
-//           itemStyle: {
-//             shadowBlur: 10,
-//             shadowOffsetX: 0,
-//             shadowColor: 'rgba(0, 0, 0, 0.5)'
-//           }
-//         }
-//       }
-//     ]
-//   }
-//   costChart.setOption(costChartOpt)
-// }
+const isEmpytyOne = ref(false)
+const isEmpytyTwo = ref(false)
+const isEmpytyThree = ref(false)
 
 const getMonthlyCost = async () => {
   const { data } = await getMonthlyCostAPI(
@@ -59,9 +30,11 @@ const getMonthlyCost = async () => {
     month.value.exposeMonth
   )
   monthlyCostList.value = data.data
+
   if (myChart === null) {
     myChart = echarts.init(costChart.value)
   }
+  isEmpytyOne.value = false
   myChart.showLoading({
     text: '加載中...',
     fontSize: 18,
@@ -100,6 +73,9 @@ const getMonthlyCost = async () => {
     }
     myChart.hideLoading()
     myChart.setOption(options)
+    if (data.data.length === 0) {
+      isEmpytyOne.value = true
+    }
   }, 2000)
 }
 
@@ -113,6 +89,8 @@ const getMonthlyIncome = async () => {
   if (myChart2 === null) {
     myChart2 = echarts.init(incomeChart.value)
   }
+  isEmpytyTwo.value = false
+
   myChart2.showLoading({
     text: '加載中...',
     fontSize: 18,
@@ -133,6 +111,17 @@ const getMonthlyIncome = async () => {
         orient: 'horizontal',
         left: 'center'
       },
+      color: [
+        '#91cc75',
+        '#5470c6',
+        '#fac858',
+        '#ee6666',
+        '#3ba272',
+        '#73c0de',
+        '#fc8452',
+        '#9a60b4',
+        '#ea7ccc'
+      ],
       series: [
         {
           name: '收入類別',
@@ -151,6 +140,9 @@ const getMonthlyIncome = async () => {
     }
     myChart2.hideLoading()
     myChart2.setOption(options)
+    if (data.data.length === 0) {
+      isEmpytyTwo.value = true
+    }
   }, 2000)
 }
 
@@ -163,6 +155,8 @@ const getBalance = async () => {
   let totalCost = data.map((item) => item.totalExpense)
   let balance = data.map((item) => item.balance)
   myChart3 = echarts.init(balanceChart.value)
+  isEmpytyThree.value = false
+
   myChart3.showLoading({
     text: '加載中...',
     fontSize: 18,
@@ -232,6 +226,9 @@ const getBalance = async () => {
     }
     myChart3.hideLoading()
     myChart3.setOption(options)
+    if (data.length === 0) {
+      isEmpytyThree.value = true
+    }
   }, 10)
 }
 
@@ -255,6 +252,7 @@ onMounted(() => {
     <el-tabs type="border-card" v-model="activeName">
       <el-tab-pane label="收支趨勢" name="first">
         <div class="chartWrapper">
+          <div class="empty" v-if="isEmpytyThree">暫無資料</div>
           <div id="balance" ref="balanceChart"></div>
         </div>
       </el-tab-pane>
@@ -265,6 +263,7 @@ onMounted(() => {
           @changeMonth="onChangeMonth(0, $event)"
         ></selectMonth>
         <div class="chartWrapper">
+          <div class="empty" v-if="isEmpytyOne">暫無資料</div>
           <div id="monthlyCost" ref="costChart"></div>
         </div>
       </el-tab-pane>
@@ -275,6 +274,7 @@ onMounted(() => {
           @changeMonth="onChangeMonth(1, $event)"
         ></selectMonth>
         <div class="chartWrapper">
+          <div class="empty" v-if="isEmpytyTwo">暫無資料</div>
           <div id="monthlyIncome" ref="incomeChart"></div>
         </div>
       </el-tab-pane>
@@ -300,7 +300,21 @@ onMounted(() => {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    // padding: 20px 50px;
+    .empty {
+      width: 100%;
+      height: 85%;
+      background: rgba($color: #000000, $alpha: 0.5);
+      position: absolute;
+      z-index: 10;
+      color: white;
+      display: flex;
+      font-size: 32px;
+      justify-content: center;
+      align-items: center;
+      @include mobile {
+        height: 90%;
+      }
+    }
     #monthlyCost {
       width: 600px;
       height: 500px;

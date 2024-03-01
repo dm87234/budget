@@ -65,8 +65,9 @@ const onLogin = async () => {
     return ElMessage.error('服務異常')
   }
   userStore.setToken(res.data.token)
-  ElMessage.success('登入成功')
+  console.log('登入成功')
   router.push('/home')
+  ElMessage.success('登入成功')
 }
 
 // 註冊
@@ -83,23 +84,45 @@ const onRegister = async () => {
     isRegister.value = false
   }
 }
+
+// FB登入
+const onFbLogin = () => {
+  console.log('fb')
+}
 </script>
 
 <template>
   <div class="login_container">
     <div class="wrapper">
       <div class="title">
-        <h1>Budget Tracker</h1>
+        <h1>望記記帳</h1>
       </div>
       <div class="main">
         <div class="left">
           <p>
-            最美記帳 <br />易用可靠的雲端記帳工具 <br />中小企業最安心的成長夥伴
+            望記記帳 <br />絕不忘記的記賬工具
+            <br />怕忘記，就望記<br />記不住就望記
           </p>
           <button @click="onOpenDialog">立即使用</button>
         </div>
         <div class="right">
-          <img src="../../assets/images/computer.png" />
+          <el-carousel height="500px">
+            <el-carousel-item>
+              <img src="../../assets/images/h1.png" />
+            </el-carousel-item>
+            <el-carousel-item>
+              <img src="../../assets/images/h2.png" />
+            </el-carousel-item>
+            <el-carousel-item>
+              <img src="../../assets/images/h3.png" />
+            </el-carousel-item>
+            <el-carousel-item>
+              <img src="../../assets/images/h4.png" />
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+        <div class="mobileRight">
+          <img src="../../assets/images/h1.png" alt="" />
         </div>
       </div>
     </div>
@@ -131,7 +154,7 @@ const onRegister = async () => {
       <!-- 社群登入 -->
       <div class="loginTip">使用社群帳號繼續</div>
       <div class="socialLogin">
-        <button class="bgStyle fbLogin"></button>
+        <button @click="onFbLogin()" class="bgStyle fbLogin"></button>
         <button class="bgStyle lineLogin"></button>
         <button class="bgStyle googleLogin"></button>
       </div>
@@ -201,7 +224,7 @@ const onRegister = async () => {
           <el-button class="button" type="warning" @click="onLogin">
             登入
           </el-button>
-          <el-link type="primary">忘記密碼</el-link>
+          <!-- <el-link type="primary">忘記密碼</el-link> -->
         </div>
         <div v-else class="dialog-footer">
           <el-button class="button" type="warning" @click="onRegister">
@@ -228,9 +251,9 @@ const onRegister = async () => {
 
   .wrapper {
     width: 76%;
-    height: 500px;
+    height: 600px;
     // background: #bfa;
-    margin-top: 50px;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -239,11 +262,11 @@ const onRegister = async () => {
     }
 
     .title {
-      // background: rgb(96, 98, 230);
-      margin-bottom: 70px;
+      margin-bottom: 30px;
       h1 {
         font-family: 'Protest Riot', sans-serif;
-        font-size: 48px;
+        font-weight: bold;
+        font-size: 60px;
         color: #0f2470;
       }
     }
@@ -251,12 +274,30 @@ const onRegister = async () => {
       // background: #9cd;
       display: flex;
       align-items: center;
+      @include bigPad {
+        flex-direction: column;
+        gap: 20px;
+      }
+      @include pad {
+        flex-direction: column;
+        gap: 20px;
+      }
+      @include mobile {
+        flex-direction: column;
+        gap: 20px;
+      }
       .left {
         margin-right: 100px;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 20px;
+        @include bigPad {
+          margin-right: 0;
+        }
+        @include pad {
+          margin-right: 0;
+        }
         @include mobile {
           margin-right: 0;
         }
@@ -264,6 +305,7 @@ const onRegister = async () => {
           font-size: 24px;
           text-align: center;
           line-height: 1.5;
+          width: 220px;
         }
         button {
           border: none;
@@ -276,11 +318,27 @@ const onRegister = async () => {
           cursor: pointer;
         }
       }
+
       .right {
+        width: 800px;
+        @include pad {
+          width: 700px;
+        }
+        @include mobile {
+          display: none;
+        }
         img {
-          width: 600px;
-          @include mobile {
-            display: none;
+          width: 100%;
+          object-fit: contain;
+        }
+      }
+      .mobileRight {
+        display: none;
+        @include mobile {
+          display: block;
+          img {
+            width: 100%;
+            object-fit: contain;
           }
         }
       }

@@ -24,7 +24,6 @@ const propsYear = ref()
 const propsMonth = ref()
 const monthlyTotalCost = ref(0)
 const allCateTotalCost = ref(0)
-const percentage = ref(0)
 
 // 金額校驗的正則
 const isMoneyOk = /^[1-9]\d*$/
@@ -57,7 +56,7 @@ const onTotalBudgetOk = async () => {
   isDisabled.value = true
   isEditTotalBudget.value = false
   getTotalBudget()
-  getCateBudget()
+  // getCateBudget()
 }
 
 //---- 發請求區----
@@ -167,7 +166,7 @@ onMounted(() => {
               <font-awesome-icon
                 v-else
                 :icon="['fas', 'circle-check']"
-                @click="onTotalBudgetOk"
+                @click="onTotalBudgetOk()"
               />
             </el-form-item>
           </el-form>
@@ -176,7 +175,11 @@ onMounted(() => {
               {{ formatMoney(monthlyTotalCost) }}
             </el-descriptions-item>
             <el-descriptions-item label="剩餘">
-              {{ formatMoney(monthlyBudget - monthlyTotalCost) }}
+              {{
+                isNaN(monthlyBudget - monthlyTotalCost)
+                  ? 0
+                  : formatMoney(monthlyBudget - monthlyTotalCost)
+              }}
             </el-descriptions-item>
           </el-descriptions>
         </div>

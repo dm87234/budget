@@ -191,7 +191,7 @@ getAllEmoji()
             </el-col>
           </el-row>
         </el-form>
-        <el-button class="resetPwdBtn" type="danger">重置密碼</el-button>
+        <!-- <el-button class="resetPwdBtn" type="danger">重置密碼</el-button> -->
       </el-card>
     </div>
     <!-- 分類設定 -->
